@@ -4,20 +4,129 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Forkcloser</title>
-  <meta name="description" content="Forkcloser: a collection of forks and ports focused on performance and correctness.">
-  <link rel="canonical" href="https://forkcloser.org/">
+  <meta name="description" content="Forks, ports, packagings and Go replacements of open-source libraries and tools, for performance and correctness; every fork lists what differs from upstream, change by change.">
+  <link rel="canonical" href="https://www.forkcloser.org/">
   <meta name="theme-color" content="#fbf8f2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1d1a16" media="(prefers-color-scheme: dark)">
   <script>try{var t=localStorage.getItem("forkcloser-theme");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
   <link rel="stylesheet" href="forkcloser.css">
+  <link rel="stylesheet" href="style.css">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta property="og:url" content="https://www.forkcloser.org/">
+  <meta property="og:title" content="Forkcloser">
+  <meta property="og:description" content="Forks, ports, packagings and Go replacements of open-source libraries and tools, for performance and correctness; every fork lists what differs from upstream, change by change.">
   <script src="forkcloser.js" defer></script>
 </head>
 <body>
-  <main class="wrap" id="main">
-    <h1>Forkcloser</h1>
-    <p>A collection of forks and ports focused on performance and correctness.</p>
-    <p>This site is being built. The projects are at <a href="https://github.com/forkcloser">github.com/forkcloser</a>.</p>
-  </main>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="wrap top">
+  <a class="brand" href="./">
+    <svg class="mark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M8 3v5a4 4 0 0 0 8 0V3"/>
+      <path d="M12 3v5M12 12v6"/>
+      <path class="table" d="M3 21h18"/>
+    </svg>
+    forkcloser
+  </a>
+  <nav class="nav" aria-label="Site">
+    <a href="#forks">Forks</a>
+    <a href="#packagings">Packagings</a>
+    <a href="#own">Own projects</a>
+    <a href="https://github.com/forkcloser">GitHub</a>
+    <button class="theme" type="button" aria-label="Theme: system. Switch to light.">
+      <svg class="auto" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" stroke="none"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </nav>
+</header>
+
+<main id="main">
+
+<div class="wrap hero">
+  <h1>Forks, ports, packagings and Go replacements of open-source libraries and tools, for performance and correctness.</h1>
+  <p class="lede">Each fork stands in for the project it comes from, with bugs fixed, hot paths made faster and hostile input contained; what differs from upstream is listed change by change, and upstream keeps its credit and its licence. Beside the forks, upstream programs built for the platforms their official builds miss, and a few tools of our own.</p>
+</div>
+
+<section id="forks">
+  <div class="wrap">
+    <h2>Forks</h2>
+    <p class="intro">Upstream's code with fixes and features of ours. Each repository's UPSTREAM.md says where it forked, what it has taken from upstream since, and what it has that upstream does not, change by change.</p>
+    <dl class="projects">
+      <dt data-repo="blake3"><a href="https://github.com/forkcloser/blake3">blake3</a></dt>
+      <dd>A fork of lukechampine/blake3, the BLAKE3 hash in Go with AVX2 and AVX-512 routines and the <code>bao</code> verified-streaming encoding; the fork corrects XOF seeking and <code>bao</code> bounds, and validates key and size instead of panicking.</dd>
+      <dt data-repo="erofs"><a href="https://github.com/forkcloser/erofs">erofs</a></dt>
+      <dd>A fork of erofs/go-erofs: EROFS filesystem images read and created through the standard <code>fs.FS</code> interface, in pure Go; hardened against untrusted images, corrected on several on-disk paths, and faster to read.</dd>
+      <dt data-repo="git-validation"><a href="https://github.com/forkcloser/git-validation">git-validation</a></dt>
+      <dd>A fork of vbatts/git-validation, which checks a range of commits for a DCO sign-off, a subject under 90 characters and no trailing whitespace; here it is released as binaries, with its dependencies trimmed and its checks unchanged, and long flags take two dashes (<code>--run</code>, <code>--range</code>).</dd>
+      <dt data-repo="go-graphviz"><a href="https://github.com/forkcloser/go-graphviz">go-graphviz</a></dt>
+      <dd>A fork of goccy/go-graphviz: Go bindings for Graphviz, with Graphviz compiled to WebAssembly and run on wazero, no C toolchain and no system Graphviz; the fork builds the WebAssembly reproducibly from sources fixed by digest, and types the bridge's errors.</dd>
+      <dt data-repo="go-licenses"><a href="https://github.com/forkcloser/go-licenses">go-licenses</a></dt>
+      <dd>A fork of google/go-licenses, which reports and checks the licences of a Go package's dependency tree; the fork removes the <code>report</code> and <code>csv</code> commands and the vendored pkgsite behind them, so the tool makes no HTTP request, and is released as binaries.</dd>
+      <dt data-repo="grid-clock-screensaver"><a href="https://github.com/forkcloser/grid-clock-screensaver">grid-clock-screensaver</a></dt>
+      <dd>A fork of chrstphrknwtn/grid-clock-screensaver: a word clock screensaver for macOS, a 16 × 15 grid of letters whose lit ones read out the time, ported to modern macOS; macOS 14 or later, Apple silicon.</dd>
+      <dt data-repo="xz"><a href="https://github.com/forkcloser/xz">xz</a></dt>
+      <dd>A fork of ulikunitz/xz: xz streams read and written in pure Go; the fork decodes faster, reads the blocks of a multi-block archive in parallel, and bounds what an archive built to break a decoder can make it do.</dd>
+      <dt data-repo="yamlfmt"><a href="https://github.com/forkcloser/yamlfmt">yamlfmt</a></dt>
+      <dd>A fork of google/yamlfmt: a YAML formatter, command line and library, with LF line endings by default, path-aware excludes and preserved comment columns.</dd>
+    </dl>
+  </div>
+</section>
+
+<section id="packagings" class="tint">
+  <div class="wrap">
+    <h2>Packagings</h2>
+    <p class="intro">Upstream programs, unchanged: built or imported from upstream's own sources at a reviewed commit, for the platforms where no official build fits.</p>
+    <dl class="projects">
+      <dt data-repo="curl"><a href="https://github.com/forkcloser/curl">curl</a></dt>
+      <dd>curl with dependable TLS 1.3 for every platform, from curl-for-win, the curl project's own reproducible-build system: the Windows packages imported and sigstore-verified, Linux and macOS built by curl-for-win's scripts at the same commit.</dd>
+      <dt data-repo="openssh"><a href="https://github.com/forkcloser/openssh">openssh</a></dt>
+      <dd>OpenSSH for macOS with security keys built in, which Apple's build lacks: the client set, the agent as a user LaunchAgent, and a server off by default and user-scoped when on, built against LibreSSL's libcrypto with libfido2 linked statically, as one relocatable package.</dd>
+    </dl>
+  </div>
+</section>
+
+<section id="own">
+  <div class="wrap">
+    <h2>Own projects</h2>
+    <p class="intro">Our own code, under our own licence: tools written where nothing existing did the job, or none came as one versioned binary you can install and verify.</p>
+    <dl class="projects">
+      <dt data-repo="compress"><a href="https://github.com/forkcloser/compress">compress</a></dt>
+      <dd>Compression and archiving in pure Go: a streaming library for zstd, gzip, xz, lz4 and bzip2, and the <code>tar</code>, <code>xz</code>, <code>gzip</code>, <code>zstd</code>, <code>zip</code> and <code>unzip</code> commands built on it, released as binaries for Linux, macOS and Windows.</dd>
+      <dt data-repo="dot"><a href="https://github.com/forkcloser/dot">dot</a></dt>
+      <dd>A Graphviz <code>dot</code> command as one static Go binary, on go-graphviz's WebAssembly engine: no Graphviz installation, no C toolchain, no system packages.</dd>
+      <dt data-repo="godolint"><a href="https://godolint.forkcloser.org/">godolint</a></dt>
+      <dd>A port of hadolint to Go: the same rules, codes, severities and messages, as a library and a command-line tool. <a class="where" href="https://github.com/forkcloser/godolint">source</a></dd>
+      <dt data-repo="hermetic"><a href="https://github.com/forkcloser/hermetic">hermetic</a></dt>
+      <dd>The aqua tool manager as one self-contained binary, with an install root, a project directory and a <code>bin</code> of its own, so the tool versions a project fixes never depend on whatever aqua the shell has.</dd>
+      <dt data-repo="taciturn"><a href="https://taciturn.forkcloser.org/">taciturn</a></dt>
+      <dd>An ssh-agent for keys in the Mac's Secure Enclave, with a per-key policy and an audit log, for unattended sessions. <a class="where" href="https://github.com/forkcloser/taciturn">source</a></dd>
+      <dt data-repo="xos"><a href="https://github.com/forkcloser/xos">xos</a></dt>
+      <dd>The standard library's <code>os</code> with <code>FILE_SHARE_DELETE</code> on Windows: files another process can rename or delete while this one holds them, and a rename that replaces a file readers hold open; call for call the same otherwise.</dd>
+    </dl>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="https://github.com/forkcloser">
+      <svg class="mark" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M8 3v5a4 4 0 0 0 8 0V3"/>
+        <path d="M12 3v5M12 12v6"/>
+        <path class="table" d="M3 21h18"/>
+      </svg>
+      <span class="org">forkcloser</span>
+    </a>
+    <span>This site is CC BY-SA 4.0; each project carries its own licence.</span>
+    <nav aria-label="Organisation links">
+      <a href="https://github.com/forkcloser">GitHub</a>
+    </nav>
+  </div>
+</footer>
+
 </body>
 </html>
