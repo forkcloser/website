@@ -1,0 +1,28 @@
+/* Forkcloser — what is particular to the organisation's own page, on top of
+ * forkcloser.css: the hero and the project lists. */
+
+.hero { padding: var(--s-12) 0 var(--s-16); }
+.hero h1 { margin-bottom: var(--s-6); max-width: 24ch; }
+.hero .lede { max-width: 64ch; }
+
+/* A group of projects: the name on the left, what it is on the right; on a
+ * phone the name sits above its line. */
+.projects {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--s-3) var(--s-8);
+  margin: var(--s-6) 0 0;
+}
+.projects dt { font-family: var(--mono); font-weight: 600; }
+.projects dt a { color: var(--ink); text-decoration: none; }
+.projects dt a:hover { color: var(--link); text-decoration: underline; }
+.projects dd { margin: 0; max-width: var(--measure); }
+.projects dd .where { color: var(--ink-3); font-size: var(--text-sm); white-space: nowrap; }
+
+@media (max-width: 600px) {
+  /* The statement is sixteen words; at the statement size it runs to seven
+   * lines on a phone, so there it is set at the page-title size. */
+  .hero h1 { font-size: var(--h1-page); line-height: 1.15; max-width: none; }
+  .projects { grid-template-columns: minmax(0, 1fr); gap: var(--s-1) 0; }
+  .projects dd { margin-bottom: var(--s-4); }
+}

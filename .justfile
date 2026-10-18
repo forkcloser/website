@@ -4,7 +4,7 @@ import '.limen/just/main.just'
 
 lint: do::lint::default
 fix: do::fix::default
-test: external csp
+test: external csp repos
 # The security workflow runs `just security`.
 security: do::security::default
 
@@ -53,3 +53,44 @@ csp:
     want="sha256-$(printf '%s' "$snippet" | openssl dgst -sha256 -binary | base64)"
     grep -qF "'$want'" site/_headers || { echo "test: site/_headers does not allow the page's inline snippet; its hash is $want" >&2; exit 1; }
     echo "test: the CSP hash matches the inline snippet" >&2
+
+# The list on the page is the organisation's repositories: every public,
+# non-archived one that is a project appears once, under Forks when GitHub
+# says it is a fork, and nothing appears that is not there. data/repos.json
+# is the committed snapshot the test reads, so the lane runs offline; `just
+# regen` refreshes it, and a repository created or archived since fails here
+# until the page follows. The repositories that serve or provision the
+# organisation (the profile, the infrastructure, the sites themselves) are
+# not projects and are left out by name.
+repos:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    echo "test: repos" >&2
+    meta='^(\.github|infra|website|website-.*)$'
+    # jq's Windows build ends raw lines with CRLF; the page side never does.
+    want=$(jq -r --arg meta "$meta" '.[] | select(.private | not) | select(.archived | not) | select(.name | test($meta) | not) | .name' data/repos.json | tr -d '\r' | sort)
+    forks=$(jq -r --arg meta "$meta" '.[] | select(.private | not) | select(.archived | not) | select(.fork) | select(.name | test($meta) | not) | .name' data/repos.json | tr -d '\r' | sort)
+    shown=$(grep -oE 'data-repo="[^"]+"' site/index.html | sed 's/data-repo="//; s/"$//' | sort)
+    # The Forks section is the markup between its id and the next section.
+    shown_forks=$(sed -n '/<section id="forks"/,/<\/section>/p' site/index.html | grep -oE 'data-repo="[^"]+"' | sed 's/data-repo="//; s/"$//' | sort)
+    [ "$(printf '%s\n' "$shown" | uniq -d | wc -l)" -eq 0 ] || { echo "test: a repository is listed twice: $(printf '%s\n' "$shown" | uniq -d | tr '\n' ' ')" >&2; exit 1; }
+    if [ "$want" != "$shown" ]; then
+        echo "test: the page's list differs from data/repos.json (< snapshot, > page):" >&2
+        diff <(printf '%s\n' "$want") <(printf '%s\n' "$shown") >&2 || true
+        exit 1
+    fi
+    if [ "$forks" != "$shown_forks" ]; then
+        echo "test: the Forks section differs from what GitHub marks as forks (< snapshot, > page):" >&2
+        diff <(printf '%s\n' "$forks") <(printf '%s\n' "$shown_forks") >&2 || true
+        exit 1
+    fi
+    echo "test: the page lists the $(printf '%s\n' "$want" | wc -l | tr -d ' ') project repositories, $(printf '%s\n' "$forks" | wc -l | tr -d ' ') of them forks" >&2
+
+# Refresh the committed snapshot of the organisation's repositories from
+# GitHub; `just test` then says what the page must follow.
+regen:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    gh repo list forkcloser --limit 200 --json name,isArchived,isPrivate,isFork,homepageUrl \
+        --jq 'sort_by(.name) | map({name, fork: .isFork, archived: .isArchived, private: .isPrivate, homepage: (.homepageUrl // "")})' > data/repos.json
+    jq -r '.[] | "\(.name)\t\(if .fork then "fork" else "" end)\(if .archived then " archived" else "" end)\(if .private then " private" else "" end)"' data/repos.json
