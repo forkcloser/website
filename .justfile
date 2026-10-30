@@ -66,25 +66,41 @@ repos:
     #!/usr/bin/env bash
     set -euo pipefail
     echo "test: repos" >&2
-    meta='^(\.github|infra|website|website-.*)$'
+    # Not projects: the organisation's own plumbing, and testbin, test-only builds of C
+    # tools that nothing ships or supports for another use.
+    meta='^(\.github|infra|testbin|website|website-.*)$'
     # jq's Windows build ends raw lines with CRLF; the page side never does.
     want=$(jq -r --arg meta "$meta" '.[] | select(.private | not) | select(.archived | not) | select(.name | test($meta) | not) | .name' data/repos.json | tr -d '\r' | sort)
-    forks=$(jq -r --arg meta "$meta" '.[] | select(.private | not) | select(.archived | not) | select(.fork) | select(.name | test($meta) | not) | .name' data/repos.json | tr -d '\r' | sort)
+    # A fork is what its UPSTREAM.md says it is (`upstream` in the snapshot: fork,
+    # repackaging, port), not what GitHub flags: a fork made by clone and push has no flag,
+    # and a repackaging or a port carries an UPSTREAM.md without being a fork.
+    forks=$(jq -r --arg meta "$meta" '.[] | select(.private | not) | select(.archived | not) | select(.upstream == "fork") | select(.name | test($meta) | not) | .name' data/repos.json | tr -d '\r' | sort)
+    packagings=$(jq -r --arg meta "$meta" '.[] | select(.private | not) | select(.archived | not) | select(.upstream == "repackaging") | select(.name | test($meta) | not) | .name' data/repos.json | tr -d '\r' | sort)
     shown=$(grep -oE 'data-repo="[^"]+"' site/index.html | sed 's/data-repo="//; s/"$//' | sort)
     # The Forks section is the markup between its id and the next section.
     shown_forks=$(sed -n '/<section id="forks"/,/<\/section>/p' site/index.html | grep -oE 'data-repo="[^"]+"' | sed 's/data-repo="//; s/"$//' | sort)
+    shown_packagings=$(sed -n '/<section id="packagings"/,/<\/section>/p' site/index.html | grep -oE 'data-repo="[^"]+"' | sed 's/data-repo="//; s/"$//' | sort)
     [ "$(printf '%s\n' "$shown" | uniq -d | wc -l)" -eq 0 ] || { echo "test: a repository is listed twice: $(printf '%s\n' "$shown" | uniq -d | tr '\n' ' ')" >&2; exit 1; }
+    # What GitHub's flag still knows that the file does not: a forked repository that never
+    # got its UPSTREAM.md. Every flagged fork must carry a class.
+    unrecorded=$(jq -r '.[] | select(.private | not) | select(.archived | not) | select(.fork and .upstream == "") | .name' data/repos.json | tr -d '\r')
+    [ -z "$unrecorded" ] || { echo "test: forked on GitHub but without an UPSTREAM.md: $(printf '%s\n' "$unrecorded" | tr '\n' ' ')" >&2; exit 1; }
     if [ "$want" != "$shown" ]; then
         echo "test: the page's list differs from data/repos.json (< snapshot, > page):" >&2
         diff <(printf '%s\n' "$want") <(printf '%s\n' "$shown") >&2 || true
         exit 1
     fi
     if [ "$forks" != "$shown_forks" ]; then
-        echo "test: the Forks section differs from what GitHub marks as forks (< snapshot, > page):" >&2
+        echo "test: the Forks section differs from the repositories whose UPSTREAM.md says Fork of (< snapshot, > page):" >&2
         diff <(printf '%s\n' "$forks") <(printf '%s\n' "$shown_forks") >&2 || true
         exit 1
     fi
-    echo "test: the page lists the $(printf '%s\n' "$want" | wc -l | tr -d ' ') project repositories, $(printf '%s\n' "$forks" | wc -l | tr -d ' ') of them forks" >&2
+    if [ "$packagings" != "$shown_packagings" ]; then
+        echo "test: the Packagings section differs from the repositories whose UPSTREAM.md says Repackaging of (< snapshot, > page):" >&2
+        diff <(printf '%s\n' "$packagings") <(printf '%s\n' "$shown_packagings") >&2 || true
+        exit 1
+    fi
+    echo "test: the page lists the $(printf '%s\n' "$want" | wc -l | tr -d ' ') project repositories, $(printf '%s\n' "$forks" | wc -l | tr -d ' ') forks and $(printf '%s\n' "$packagings" | wc -l | tr -d ' ') packagings" >&2
 
 # Refresh the committed snapshot of the organisation's repositories from
 # GitHub; `just test` then says what the page must follow.
@@ -93,4 +109,22 @@ regen:
     set -euo pipefail
     gh repo list forkcloser --limit 200 --json name,isArchived,isPrivate,isFork,homepageUrl \
         --jq 'sort_by(.name) | map({name, fork: .isFork, archived: .isArchived, private: .isPrivate, homepage: (.homepageUrl // "")})' > data/repos.json
-    jq -r '.[] | "\(.name)\t\(if .fork then "fork" else "" end)\(if .archived then " archived" else "" end)\(if .private then " private" else "" end)"' data/repos.json
+    # upstream: what the repository's UPSTREAM.md says it is, by its opening words (the
+    # book's three classes: Fork of, Repackaging of, Port of); empty when there is none.
+    # GitHub's fork flag misses a fork made by clone and push. One request per repository.
+    # Only a 404 (no UPSTREAM.md) is an empty class; any other failure (rate limit, auth)
+    # aborts, since swallowing it would record a fork as none and the test would then
+    # demand it leave the Forks section. The file is fetched raw: no --jq, no base64.
+    errfile=$(mktemp "${TMPDIR:-/tmp}/regen.XXXXXX")
+    trap 'rm -f "$errfile"' EXIT
+    for name in $(jq -r '.[].name' data/repos.json | tr -d '\r'); do
+        if body=$(gh api -H 'Accept: application/vnd.github.raw+json' "repos/forkcloser/$name/contents/UPSTREAM.md" 2>"$errfile"); then
+            kind=$(printf '%s\n' "$body" | grep -m1 -oE '^(Fork|Repackaging|Port) of' | tr -d '\r' | awk '{print tolower($1)}' || true)
+        elif grep -q 'HTTP 404' "$errfile"; then
+            kind=''
+        else
+            echo "regen: reading $name's UPSTREAM.md failed:" >&2; cat "$errfile" >&2; exit 1
+        fi
+        jq -c --arg name "$name" --arg kind "$kind" 'map(if .name == $name then . + {upstream: $kind} else . end)' data/repos.json > data/repos.json.tmp && mv data/repos.json.tmp data/repos.json
+    done
+    jq -r '.[] | "\(.name)\t\(if .fork then "flagged" else "" end) \(.upstream)\(if .archived then " archived" else "" end)\(if .private then " private" else "" end)"' data/repos.json
