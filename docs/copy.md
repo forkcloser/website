@@ -51,8 +51,10 @@ Each entry: name, one line, link. The link is the project's site where one exist
 repository on GitHub. Two sites exist today, godolint.forkcloser.org and
 taciturn.forkcloser.org (both answer 200 as of 2026-10-18); every other link is GitHub.
 
-Left out: `.github`, `infra`, `website`, `website-godolint`, `website-taciturn`. They
-serve or provision the organisation and are not things a reader would install or import;
+Left out: `.github`, `infra`, `testbin`, `website`, `website-godolint`,
+`website-taciturn`. They serve or provision the organisation, or build what its tests need
+(testbin: test-only builds of C tools, which its own README says nothing ships or
+supports), and are not things a reader would install or import;
 the two site repositories are reached through the sites they serve, and this page is the
 `website` repository's own output. No argument for including them.
 
