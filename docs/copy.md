@@ -66,17 +66,6 @@ change by change.
 (src: the UPSTREAM.md header and tables in each repository below; the standard is
 farcloser/limen book/forks.md)
 
-- **blake3** — A fork of lukechampine/blake3, the BLAKE3 hash in Go with AVX2 and AVX-512
-  routines and the `bao` verified-streaming encoding; the fork corrects XOF seeking and
-  `bao` bounds, and validates key and size instead of panicking.
-  https://github.com/forkcloser/blake3
-  (src: README.md, first paragraphs; UPSTREAM.md, "Fork of", "Changes upstream does not
-  have")
-- **erofs** — A fork of erofs/go-erofs: EROFS filesystem images read and created through
-  the standard `fs.FS` interface, in pure Go; hardened against untrusted images, corrected
-  on several on-disk paths, and faster to read.
-  https://github.com/forkcloser/erofs
-  (src: README.md, "About this fork")
 - **git-validation** — A fork of vbatts/git-validation, which checks a range of commits
   for a DCO sign-off, a subject under 90 characters and no trailing whitespace; here it is
   released as binaries, with its dependencies trimmed and its checks unchanged, and long
@@ -84,6 +73,17 @@ farcloser/limen book/forks.md)
   https://github.com/forkcloser/git-validation
   (src: README.md, "usage", the default rule set; UPSTREAM.md, "Changes upstream does not
   have", four rows in review on 2026-10-18 for pull requests 7, 8, 12 and 16)
+- **go-blake3** — A fork of lukechampine/blake3, the BLAKE3 hash in Go with AVX2 and AVX-512
+  routines and the `bao` verified-streaming encoding; the fork corrects XOF seeking and
+  `bao` bounds, and validates key and size instead of panicking.
+  https://github.com/forkcloser/go-blake3
+  (src: README.md, first paragraphs; UPSTREAM.md, "Fork of", "Changes upstream does not
+  have")
+- **go-erofs** — A fork of erofs/go-erofs: EROFS filesystem images read and created through
+  the standard `fs.FS` interface, in pure Go; hardened against untrusted images, corrected
+  on several on-disk paths, and faster to read.
+  https://github.com/forkcloser/go-erofs
+  (src: README.md, "About this fork")
 - **go-graphviz** — A fork of goccy/go-graphviz: Go bindings for Graphviz, with Graphviz
   compiled to WebAssembly and run on wazero, no C toolchain and no system Graphviz; the
   fork builds the WebAssembly reproducibly from sources fixed by digest, and types the
@@ -98,17 +98,17 @@ farcloser/limen book/forks.md)
   https://github.com/forkcloser/go-licenses
   (src: README.md, first paragraph; UPSTREAM.md, "Changes upstream does not have"; pull
   request 15, the `cmd/` path and binaries, due in the table per the Forks session)
+- **go-xz** — A fork of ulikunitz/xz: xz streams read and written in pure Go; the fork
+  decodes faster, reads the blocks of a multi-block archive in parallel, and bounds what an
+  archive built to break a decoder can make it do.
+  https://github.com/forkcloser/go-xz
+  (src: README.md, first paragraphs, `ParallelReader`; forkcloser/.github profile README,
+  the xz entry; UPSTREAM.md)
 - **grid-clock-screensaver** — A fork of chrstphrknwtn/grid-clock-screensaver: a word
   clock screensaver for macOS, a 16 × 15 grid of letters whose lit ones read out the time,
   ported to modern macOS; macOS 14 or later, Apple silicon.
   https://github.com/forkcloser/grid-clock-screensaver
   (src: README.md, first paragraph and "Requirements")
-- **xz** — A fork of ulikunitz/xz: xz streams read and written in pure Go; the fork
-  decodes faster, reads the blocks of a multi-block archive in parallel, and bounds what an
-  archive built to break a decoder can make it do.
-  https://github.com/forkcloser/xz
-  (src: README.md, first paragraphs, `ParallelReader`; forkcloser/.github profile README,
-  the xz entry; UPSTREAM.md)
 - **yamlfmt** — A fork of google/yamlfmt: a YAML formatter, command line and library, with
   LF line endings by default, path-aware excludes and preserved comment columns.
   https://github.com/forkcloser/yamlfmt
@@ -139,15 +139,20 @@ Our own code, under our own licence: tools written where nothing existing did th
 none came as one versioned binary you can install and verify. (src: forkcloser/.github
 profile README, "Own projects"; the dot and godolint READMEs on why each exists)
 
-- **compress** — Compression and archiving in pure Go: a streaming library for zstd,
-  gzip, xz, lz4 and bzip2, and the `tar`, `xz`, `gzip`, `zstd`, `zip` and `unzip` commands
-  built on it, released as binaries for Linux, macOS and Windows.
-  https://github.com/forkcloser/compress
-  (src: README.md, first paragraph; the v0.2.0 release assets: darwin_arm64, linux_amd64,
-  linux_arm64, windows_amd64, windows_arm64)
 - **dot** — A Graphviz `dot` command as one static Go binary, on go-graphviz's WebAssembly
   engine: no Graphviz installation, no C toolchain, no system packages.
   https://github.com/forkcloser/dot
+  (src: README.md, first paragraph)
+- **go-compress** — Compression and archiving in pure Go: a streaming library for zstd,
+  gzip, xz, lz4 and bzip2, and the `tar`, `xz`, `gzip`, `zstd`, `zip` and `unzip` commands
+  built on it, released as binaries for Linux, macOS and Windows.
+  https://github.com/forkcloser/go-compress
+  (src: README.md, first paragraph; the v0.2.0 release assets: darwin_arm64, linux_amd64,
+  linux_arm64, windows_amd64, windows_arm64)
+- **go-xos** — The standard library's `os` with `FILE_SHARE_DELETE` on Windows: files another
+  process can rename or delete while this one holds them, and a rename that replaces a file
+  readers hold open; call for call the same otherwise.
+  https://github.com/forkcloser/go-xos
   (src: README.md, first paragraph)
 - **godolint** — A port of hadolint to Go: the same rules, codes, severities and messages,
   as a library and a command-line tool.
@@ -163,11 +168,6 @@ profile README, "Own projects"; the dot and godolint READMEs on why each exists)
   and an audit log, for unattended sessions.
   https://taciturn.forkcloser.org/
   (src: README.md, first paragraph; the repository description on GitHub)
-- **xos** — The standard library's `os` with `FILE_SHARE_DELETE` on Windows: files another
-  process can rename or delete while this one holds them, and a rename that replaces a file
-  readers hold open; call for call the same otherwise.
-  https://github.com/forkcloser/xos
-  (src: README.md, first paragraph)
 
 ## Footer
 
