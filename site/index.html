@@ -55,22 +55,22 @@
     <h2>Forks</h2>
     <p class="intro">Upstream's code with fixes and features of ours. Each repository's UPSTREAM.md says where it forked, what it has taken from upstream since, and what it has that upstream does not, change by change.</p>
     <dl class="projects">
-      <dt data-repo="blake3"><a href="https://github.com/forkcloser/blake3">blake3</a></dt>
-      <dd>A fork of lukechampine/blake3, the BLAKE3 hash in Go with AVX2 and AVX-512 routines and the <code>bao</code> verified-streaming encoding; the fork corrects XOF seeking and <code>bao</code> bounds, and validates key and size instead of panicking.</dd>
-      <dt data-repo="erofs"><a href="https://github.com/forkcloser/erofs">erofs</a></dt>
-      <dd>A fork of erofs/go-erofs: EROFS filesystem images read and created through the standard <code>fs.FS</code> interface, in pure Go; hardened against untrusted images, corrected on several on-disk paths, and faster to read.</dd>
       <dt data-repo="git-validation"><a href="https://github.com/forkcloser/git-validation">git-validation</a></dt>
       <dd>A fork of vbatts/git-validation, which checks a range of commits for a DCO sign-off, a subject under 90 characters and no trailing whitespace; here it is released as binaries, with its dependencies trimmed and its checks unchanged, and long flags take two dashes (<code>--run</code>, <code>--range</code>).</dd>
+      <dt data-repo="go-blake3"><a href="https://github.com/forkcloser/go-blake3">go-blake3</a></dt>
+      <dd>A fork of lukechampine/blake3, the BLAKE3 hash in Go with AVX2 and AVX-512 routines and the <code>bao</code> verified-streaming encoding; the fork corrects XOF seeking and <code>bao</code> bounds, and validates key and size instead of panicking.</dd>
+      <dt data-repo="go-erofs"><a href="https://github.com/forkcloser/go-erofs">go-erofs</a></dt>
+      <dd>A fork of erofs/go-erofs: EROFS filesystem images read and created through the standard <code>fs.FS</code> interface, in pure Go; hardened against untrusted images, corrected on several on-disk paths, and faster to read.</dd>
       <dt data-repo="go-graphviz"><a href="https://github.com/forkcloser/go-graphviz">go-graphviz</a></dt>
       <dd>A fork of goccy/go-graphviz: Go bindings for Graphviz, with Graphviz compiled to WebAssembly and run on wazero, no C toolchain and no system Graphviz; the fork builds the WebAssembly reproducibly from sources fixed by digest, and types the bridge's errors.</dd>
       <dt data-repo="go-licenses"><a href="https://github.com/forkcloser/go-licenses">go-licenses</a></dt>
       <dd>A fork of google/go-licenses, which reports and checks the licences of a Go package's dependency tree; the fork removes the <code>report</code> and <code>csv</code> commands and the vendored pkgsite behind them, so the tool makes no HTTP request, and is released as binaries.</dd>
+      <dt data-repo="go-vz"><a href="https://github.com/forkcloser/go-vz">go-vz</a></dt>
+      <dd>A fork of Code-Hex/vz, the Go binding for Apple's Virtualization.framework, for Apple silicon on the current macOS: one vmnet network per virtual machine, a virtio socket that closes cleanly and can half-close, a build that fails on the wrong SDK rather than booting a VM with no network, and the macOS-guest provisioning bindings upstream does not have yet.</dd>
+      <dt data-repo="go-xz"><a href="https://github.com/forkcloser/go-xz">go-xz</a></dt>
+      <dd>A fork of ulikunitz/xz: xz streams read and written in pure Go; the fork decodes faster, reads the blocks of a multi-block archive in parallel, and bounds what an archive built to break a decoder can make it do.</dd>
       <dt data-repo="grid-clock-screensaver"><a href="https://github.com/forkcloser/grid-clock-screensaver">grid-clock-screensaver</a></dt>
       <dd>A fork of chrstphrknwtn/grid-clock-screensaver: a word clock screensaver for macOS, a 16 × 15 grid of letters whose lit ones read out the time, ported to modern macOS; macOS 14 or later, Apple silicon.</dd>
-      <dt data-repo="vz"><a href="https://github.com/forkcloser/vz">vz</a></dt>
-      <dd>A fork of Code-Hex/vz, the Go binding for Apple's Virtualization.framework, for Apple silicon on the current macOS: one vmnet network per virtual machine, a virtio socket that closes cleanly and can half-close, a build that fails on the wrong SDK rather than booting a VM with no network, and the macOS-guest provisioning bindings upstream does not have yet.</dd>
-      <dt data-repo="xz"><a href="https://github.com/forkcloser/xz">xz</a></dt>
-      <dd>A fork of ulikunitz/xz: xz streams read and written in pure Go; the fork decodes faster, reads the blocks of a multi-block archive in parallel, and bounds what an archive built to break a decoder can make it do.</dd>
       <dt data-repo="yamlfmt"><a href="https://github.com/forkcloser/yamlfmt">yamlfmt</a></dt>
       <dd>A fork of google/yamlfmt: a YAML formatter, command line and library, with LF line endings by default, path-aware excludes and preserved comment columns.</dd>
     </dl>
@@ -95,18 +95,18 @@
     <h2>Own projects</h2>
     <p class="intro">Our own code, under our own licence: tools written where nothing existing did the job, or none came as one versioned binary you can install and verify.</p>
     <dl class="projects">
-      <dt data-repo="compress"><a href="https://github.com/forkcloser/compress">compress</a></dt>
-      <dd>Compression and archiving in pure Go: a streaming library for zstd, gzip, xz, lz4 and bzip2, and the <code>tar</code>, <code>xz</code>, <code>gzip</code>, <code>zstd</code>, <code>zip</code> and <code>unzip</code> commands built on it, released as binaries for Linux, macOS and Windows.</dd>
       <dt data-repo="dot"><a href="https://github.com/forkcloser/dot">dot</a></dt>
       <dd>A Graphviz <code>dot</code> command as one static Go binary, on go-graphviz's WebAssembly engine: no Graphviz installation, no C toolchain, no system packages.</dd>
+      <dt data-repo="go-compress"><a href="https://github.com/forkcloser/go-compress">go-compress</a></dt>
+      <dd>Compression and archiving in pure Go: a streaming library for zstd, gzip, xz, lz4 and bzip2, and the <code>tar</code>, <code>xz</code>, <code>gzip</code>, <code>zstd</code>, <code>zip</code> and <code>unzip</code> commands built on it, released as binaries for Linux, macOS and Windows.</dd>
+      <dt data-repo="go-xos"><a href="https://github.com/forkcloser/go-xos">go-xos</a></dt>
+      <dd>The standard library's <code>os</code> with <code>FILE_SHARE_DELETE</code> on Windows: files another process can rename or delete while this one holds them, and a rename that replaces a file readers hold open; call for call the same otherwise.</dd>
       <dt data-repo="godolint"><a href="https://godolint.forkcloser.org/">godolint</a></dt>
       <dd>A port of hadolint to Go: the same rules, codes, severities and messages, as a library and a command-line tool. <a class="where" href="https://github.com/forkcloser/godolint">source</a></dd>
       <dt data-repo="hermetic"><a href="https://github.com/forkcloser/hermetic">hermetic</a></dt>
       <dd>The aqua tool manager as one self-contained binary, with an install root, a project directory and a <code>bin</code> of its own, so the tool versions a project fixes never depend on whatever aqua the shell has.</dd>
       <dt data-repo="taciturn"><a href="https://taciturn.forkcloser.org/">taciturn</a></dt>
       <dd>An ssh-agent for keys in the Mac's Secure Enclave, with a per-key policy and an audit log, for unattended sessions. <a class="where" href="https://github.com/forkcloser/taciturn">source</a></dd>
-      <dt data-repo="xos"><a href="https://github.com/forkcloser/xos">xos</a></dt>
-      <dd>The standard library's <code>os</code> with <code>FILE_SHARE_DELETE</code> on Windows: files another process can rename or delete while this one holds them, and a rename that replaces a file readers hold open; call for call the same otherwise.</dd>
     </dl>
   </div>
 </section>
